@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    
+
+    
+</head>
+
+    <style>
+        
+        body{
+            background-color: #b5fd8d;
+            user-select: none; /*необходимо для того чтобы при нажатии на странице нельзя было выделить символы*/
+        }
+        .container{
+            margin: auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            grid-gap: 4px;
+            background-color: #212121;
+            padding: 4px;
+            border-radius: 5px;
+            max-width: 360px;
+            font-family: "Tahoma"
+        }
+        
+        .item{
+            background-color: #b3e5fc;
+            color: #000;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 22px;
+            cursor: pointer;
+            font-weight: bold;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .item:hover{
+            background-color: #0288d1;
+            box-shadow: 0px 0px 7px 2px #e3fa89;
+        }
+        
+        .item:active{
+            background-color: #5288f1;
+            transition: .1s linear;
+        }
+        
+        form {
+            max-width: 99%;
+        }
+        
+        input{
+            width: 100%;
+            height: 60px;
+            border: none;
+            font-size: 30px;
+            outline: none;
+            text-align: right;
+        }
+        
+        .input{
+            grid-column: 1/-1; /*Означает то что первая ячейка расстянется на всю ширину контейнера*/
+            padding: 0;
+        }
+        
+        .clean {
+            grid-column: 1/3;
+            background-color: #0288d1;
+        }
+        .back {
+            grid-column: 3/4;
+        }
+        
+        .equal{
+            grid-column: 4;
+            grid-row: 7/8;
+            background-color: #bdbdbd;
+            
+        }
+        
+        .zero{
+            grid-column: 1/3;
+        }
+        
+        .pulse {
+            background-color: #0288d1;
+            border-radius: 50%;
+            animation: pulse 0.5s ease-out;
+            transform: scale(0);
+            position: absolute;
+        }
+        
+        @keyframes pulse {
+            to {
+                transform: scale(2);
+                background-color: #fff;
+                opacity: 0;
+            }
+        }
+        
+    </style>
+
+<body>
+    
+    <div class = 'container'>
+        <div class = 'item-main input'><form name='form' id = 'form'><input type='text' name = 'textview' readonly></form></div>
+        <div class = 'item clean'>C</div>
+        <div class = 'item back'>&larr;</div>
+        <div class = 'item' onclick = "mathSqrt()">√</div>
+        <div class = 'item' onclick = "insert('+')">+</div>
+        <div class = 'item' onclick = "insert('-')">-</div>
+        <div class = 'item' onclick = "insert('*')">&times</div>
+        <div class = 'item' onclick = "insert('/')">&divide</div>
+        <div class = 'item' onclick = "insert('7')">7</div>
+        <div class = 'item' onclick = "insert('8')">8</div>
+        <div class = 'item' onclick = "insert('9')">9</div>
+        <div class = 'item' onclick = "insert('(')">(</div>
+        <div class = 'item' onclick = "insert('4')">4</div>
+        <div class = 'item' onclick = "insert('5')">5</div>
+        <div class = 'item' onclick = "insert('6')">6</div>
+        <div class = 'item' onclick = "insert(')')">)</div>
+        <div class = 'item' onclick = "insert('1')">1</div>
+        <div class = 'item' onclick = "insert('2')">2</div>
+        <div class = 'item' onclick = "insert('3')">3</div>
+        
+        <div class = 'item factorial'>n!</div>
+        <div class = 'item equal'>=</div>
+        <div class = 'item zero' onclick = "insert('0')">0</div>
+        <div class = 'item' onclick = "insert('.')">.</div>
+        
+    </div>
+    
+    
+    
+    <script>
+    "use strict"
+        let form = document.querySelector('#form');
+        let clean = document.querySelector('.clean');
+        let equal = document.querySelector('.equal');
+        let back = document.querySelector('.back');
+        let factorial = document.querySelector('.factorial');
+        let items = document.querySelectorAll('.item');
+
+        
+        function insert(num) {
+            form.textview.value = form.textview.value + num;
+        }
+        
+        function mathSqrt(num) {
+            let exp = form.textview.value;
+            num = Math.sqrt(eval(exp))
+            form.textview.value = num;
+        }
+        
+        function isClean(){
+            form.textview.value = '';
+        }
+        
+        function isBack(){
+            let exp = form.textview.value;
+            form.textview.value = exp.substr(0, exp.length - 1)
+        }
+        
+        function isEqual(){
+            let exp = form.textview.value;
+            if (exp){
+                form.textview.value = eval(exp) //метод eval записывает строку в виде выражения. То есть эта переменная позволяет подсчитать сама собой, преобразуя все текстовые данные хранящиеся в переменной exp в выражение.
+            }
+            return form.textview.value;
+        }
+        
+        function isEqualToFixed(){
+            form.textview.value = Number(isEqual()).toFixed(2)
+        }
+        
+        
+        function isFactorial(){
+            let sum = 1;
+            for (let i = 1; i <= Number(form.textview.value); i++){
+                sum = sum + sum * (i - 1);
+            }
+            form.textview.value = sum;
+        }
+        
+        
+        function addElement(e){
+            let addDiv = document.createElement('div');
+            let mValue = Math.max(this.clientWidth, this.clientHeight) - 25;
+            
+            let sDiv = addDiv.style;
+            let px = 'px';
+            
+            let rect = this.getBoundingClientRect();
+            
+            sDiv.width = sDiv.height = mValue + px;
+            
+            sDiv.left = e.clientX - rect.left - (mValue / 2) + px;
+            sDiv.top = e.clientY - rect.top - (mValue / 2) + px;
+            
+            addDiv.classList.add('pulse');
+            this.appendChild(addDiv);
+            
+            console.log(addDiv);
+            console.log(mValue);
+            console.log(rect);
+        }
+
+
+        
+        
+        
+        
+        
+        
+        
+        clean.addEventListener('click', isClean);
+        back.addEventListener('click', isBack);
+        equal.addEventListener('click', isEqual);
+        equal.addEventListener('dblclick', isEqualToFixed);
+        factorial.addEventListener('click', isFactorial);
+        
+        for (let elem of items){
+            elem.addEventListener('click', addElement);
+        }
+        
+    </script>
+</body>
+</html>
